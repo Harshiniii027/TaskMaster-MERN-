@@ -18,7 +18,8 @@ const addTask = async (req, res) => {
       return res.status(400).json({ error: "Description must have 6 characters." });
     }
 
-    const newTask = new Task({ title, description, priority, status });
+    const newTask = new Task({ title, description, priority, status, user: user._id });
+
 
     await newTask.save();
 
@@ -66,7 +67,8 @@ const getTask = async (req, res) => {
     }
 
     console.log(user)
-    const tasks = await Task.find({ user: req.params.id }); // Fetch tasks for the logged-in user
+    const tasks = await Task.find({ user: req.user._id });
+
     return res.status(200).json({ tasks });
   } catch (error) {
     console.error("Error fetching tasks:", error);
