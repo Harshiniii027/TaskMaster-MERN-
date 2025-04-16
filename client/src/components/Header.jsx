@@ -18,15 +18,23 @@ const Header = ({ setAddTaskDiv }) => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b px-10 py-4 flex items-center justify-between">
-      
-      <h2 className="text-4xl font-semibold text-teal-800">TaskMaster</h2>
+    <header className="bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between backdrop-blur-sm bg-opacity-80">
+      <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500">
+        TaskMaster
+      </h2>
 
       <div className="flex items-center gap-6">
         <button
+          onClick={() => setAddTaskDiv(true)}
+          className="px-4 py-2 text-sm md:text-base rounded-lg bg-gradient-to-r from-amber-500 to-yellow-500 text-gray-900 font-semibold hover:from-amber-400 hover:to-yellow-400 transition-all duration-300 shadow-md"
+        >
+          + Add Task
+        </button>
+
+        <button
           onClick={logout}
           title="Logout"
-          className="text-2xl text-gray-600 hover:text-red-600 transition-all duration-300"
+          className="text-xl text-gray-400 hover:text-yellow-400 transition-all duration-300 p-2 rounded-full hover:bg-gray-700"
         >
           <IoLogOutOutline />
         </button>

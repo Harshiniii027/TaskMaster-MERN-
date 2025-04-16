@@ -5,6 +5,7 @@ import Login from './Pages/Login'
 import Dasboards from './Pages/Dasboards'
 import HomePage from './Pages/HomePage'
 import Help from './components/Help'
+import Settings from './components/Settings'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Route path='/login' element={<Login/>} />
       <Route path='/dashboard' element={<Dasboards/>} />
       <Route path='/help' element={<Help/>}/>
+      <Route path='/settings' element={<Settings/>} />
 
       </Routes>
     </>
