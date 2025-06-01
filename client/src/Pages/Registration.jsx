@@ -1,79 +1,110 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { FaUserPlus } from 'react-icons/fa';
 
 const Registration = () => {
   const navigate = useNavigate();
-  const [Values, setValues] = useState({
+  const [values, setValues] = useState({
     username: "",
     email: "",
     password: "",
   });
 
-  const change = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setValues({ ...Values, [name]: value });
+    setValues({ ...values, [name]: value });
   };
 
-  const register = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1000/api/v1/register", Values);
-      alert("Registration Successful");
+      await axios.post("http://localhost:1000/api/v1/register", values);
+      alert("Registration Successful!");
       navigate("/login");
     } catch (error) {
-      alert(error.response.data.error || "Registration failed");
+      const errorMsg = error.response?.data?.error || "Registration failed. Please try again.";
+      alert(errorMsg);
     }
   };
 
   return (
-    <div className='flex h-screen flex-col items-center justify-center bg-gradient-to-br from-teal-900 to-gray-900 text-white'>
-      <div className='w-[90vw] md:w-[50vw] lg:w-[30vw] bg-gray-800 bg-opacity-80 rounded-lg p-8 shadow-lg'>
-        <h1 className='text-3xl font-bold text-center mb-1 text-yellow-400'>
-          TaskMaster
-        </h1>
-        <h3 className='text-center font-semibold text-gray-300 mb-6'>
-          Register With TASKMASTER
-        </h3>
+    <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100'>
+      <div className='w-full max-w-md bg-white rounded-lg shadow-md p-8 mx-4'>
+        <div className='flex flex-col items-center mb-8'>
+          <div className='bg-teal-100 p-3 rounded-full mb-4'>
+            <FaUserPlus className='text-teal-600 text-2xl' />
+          </div>
+          <h1 className='text-2xl font-bold text-gray-800'>
+            Create Your Account
+          </h1>
+          <p className='text-gray-600 mt-2'>Join TaskMaster today</p>
+        </div>
 
-        <form className='flex flex-col gap-5'>
-          <input
-            type="text"
-            required
-            placeholder='Username'
-            className='border rounded px-4 py-2 border-zinc-400 w-full outline-none bg-gray-700 text-white placeholder-gray-400'
-            name="username"
-            value={Values.username}
-            onChange={change}
-          />
-          <input
-            type="email"
-            required
-            placeholder='Email'
-            className='border rounded px-4 py-2 border-zinc-400 w-full outline-none bg-gray-700 text-white placeholder-gray-400'
-            name="email"
-            value={Values.email}
-            onChange={change}
-          />
-          <input
-            type="password"
-            required
-            placeholder='Password'
-            className='border rounded px-4 py-2 border-zinc-400 w-full outline-none bg-gray-700 text-white placeholder-gray-400'
-            name="password"
-            value={Values.password}
-            onChange={change}
-          />
+        <form className='space-y-5'>
+          <div>
+            <label htmlFor="username" className='block text-sm font-medium text-gray-700 mb-1'>
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              required
+              className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+              name="username"
+              value={values.username}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="email" className='block text-sm font-medium text-gray-700 mb-1'>
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              required
+              className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+              name="email"
+              value={values.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className='block text-sm font-medium text-gray-700 mb-1'>
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              required
+              className='w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent'
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+            />
+          </div>
+
           <button
-            className='bg-teal-600 text-white font-semibold py-2 rounded hover:bg-teal-500 transition-all duration-300'
-            onClick={register}
+            type="submit"
+            className='w-full bg-teal-600 text-white py-2 px-4 rounded-md hover:bg-teal-700 transition duration-200 flex items-center justify-center'
+            onClick={handleRegister}
           >
+            <FaUserPlus className='mr-2' />
             Register
           </button>
 
-          <p className='text-center font-semibold text-gray-300'>
-            Already have an account? <Link to="/login" className='text-yellow-400 hover:underline'>Login</Link>
-          </p>
+          <div className='text-center text-sm text-gray-600 pt-2'>
+            Already have an account?{' '}
+            <Link 
+              to="/login" 
+              className='text-teal-600 hover:text-teal-700 font-medium'
+            >
+              Sign in
+            </Link>
+          </div>
         </form>
       </div>
     </div>

@@ -18,19 +18,19 @@ const TaskColumn = ({ title, status, tasks, updateTaskStatus, handleEdit, handle
         flex flex-col
         flex-1 min-w-[280px] p-4 rounded-lg
         bg-white border border-gray-200
-        shadow-sm hover:shadow-md transition-all
-        ${isOver ? 'ring-1 ring-amber-300 bg-amber-50/30' : ''}
+        shadow-sm hover:shadow-md transition-all duration-200
+        ${isOver ? 'ring-2 ring-teal-400 bg-teal-50/40' : ''}
         mx-2 first:ml-0 last:mr-0
       `}
     >
       <h2 className={`
         text-center p-3 rounded-md mb-4 font-semibold
-        text-white bg-gradient-to-r from-amber-500 to-yellow-500
-        shadow-sm
+        // text-white bg-gradient-to-r from-teal-600 to-teal-600
+        shadow-md
       `}>
         {title}
       </h2>
-      
+
       <div className="flex flex-col gap-3 flex-1">
         {tasks
           .filter(task => task.status === status)

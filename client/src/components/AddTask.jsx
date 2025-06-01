@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaTasks } from 'react-icons/fa';
 
 const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
   const [taskValues, setTaskValues] = useState({
@@ -9,7 +10,6 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
     status: 'ToDo',
   });
 
-  // Pre-fill form if editing
   useEffect(() => {
     if (editTaskData) {
       setTaskValues({
@@ -31,7 +31,7 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
     try {
       if (editTaskData) {
         await axios.put(
-          `http://localhost:1000/api/v1/updateTask/${editTaskData._id}`,
+          `http://localhost:1000/api/v1/editTask/${editTaskData._id}`,
           taskValues,
           { withCredentials: true }
         );
@@ -44,66 +44,67 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
         );
         alert('Task Added Successfully');
       }
-
       refreshTasks();
       closeModal();
     } catch (error) {
       console.error('Error saving task:', error);
-      const errorMessage = error.response?.data?.error || "An unexpected error occurred.";
-      alert(errorMessage);
+      alert(error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
-  // Prevent background scroll when modal is open
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, []);
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 backdrop-blur-sm">
-      <div className="bg-gray-800/90 backdrop-blur-sm rounded-xl p-8 shadow-2xl w-[90vw] md:w-[50vw] lg:w-[40vw] border border-gray-700/50">
-        <h1 className="text-3xl font-bold text-center mb-1 text-yellow-400">
-          TaskMaster
-        </h1>
-        <h3 className="text-center font-semibold text-gray-300 mb-6">
-          {editTaskData ? 'Edit Task' : 'Add New Task'}
-        </h3>
+    <div 
+      className="fixed inset-0 bg-white z-50 flex items-center justify-center" // Changed to solid black
+      onClick={closeModal}
+    >
+      <div 
+        className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl" // Increased shadow
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header with centered icon and title */}
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center">
+            <FaTasks className="h-8 w-8 text-teal-600" /> {/* Larger icon */}
+            <span className="ml-3 text-2xl font-bold text-gray-800">TaskMaster</span>
+          </div>
+          <p className="mt-2 text-gray-600">
+            {editTaskData ? 'Edit Your Task' : 'Create New Task'}
+          </p>
+        </div>
 
-        <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={taskValues.title}
-            onChange={handleChange}
-            required
-            placeholder="Task Title"
-            className="border rounded-lg px-4 py-2 border-gray-600 w-full outline-none bg-gray-700/80 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-          />
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <input
+              type="text"
+              name="title"
+              value={taskValues.title}
+              onChange={handleChange}
+              placeholder="Task Title"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
+              required
+            />
+          </div>
 
-          <textarea
-            id="description"
-            name="description"
-            value={taskValues.description}
-            onChange={handleChange}
-            required
-            placeholder="Task Description"
-            rows="3"
-            className="border rounded-lg px-4 py-2 border-gray-600 w-full outline-none bg-gray-700/80 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-          />
+          <div>
+            <textarea
+              name="description"
+              value={taskValues.description}
+              onChange={handleChange}
+              placeholder="Task Description"
+              rows="4"
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
+              required
+            />
+          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label htmlFor="priority" className="text-sm text-gray-300 font-medium">Priority</label>
+          <div className="grid grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
               <select
-                id="priority"
                 name="priority"
                 value={taskValues.priority}
                 onChange={handleChange}
-                className="border rounded-lg px-4 py-2 border-gray-600 w-full outline-none bg-gray-700/80 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
               >
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
@@ -111,14 +112,13 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
               </select>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <label htmlFor="status" className="text-sm text-gray-300 font-medium">Status</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <select
-                id="status"
                 name="status"
                 value={taskValues.status}
                 onChange={handleChange}
-                className="border rounded-lg px-4 py-2 border-gray-600 w-full outline-none bg-gray-700/80 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
               >
                 <option value="ToDo">To Do</option>
                 <option value="inProgress">In Progress</option>
@@ -127,17 +127,17 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
             </div>
           </div>
 
-          <div className="flex gap-4 pt-2">
+          <div className="flex gap-5 pt-3">
             <button
               type="button"
               onClick={closeModal}
-              className="flex-1 border rounded-lg px-4 py-2 border-gray-600 text-gray-300 font-semibold hover:bg-gray-700/50 hover:border-gray-500 transition-all duration-300"
+              className="flex-1 py-3 border-2 border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-100 transition duration-200"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 bg-teal-600 text-white font-semibold py-2 rounded-lg hover:bg-teal-500 transition-all duration-300 shadow-md hover:shadow-lg"
+              className="flex-1 py-3 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 transition duration-200 shadow-md hover:shadow-lg"
             >
               {editTaskData ? 'Update Task' : 'Add Task'}
             </button>

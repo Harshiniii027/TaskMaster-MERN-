@@ -36,23 +36,27 @@ const addTask = async (req, res) => {
 const editTask = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, priority, status } = req.body;
+    const updates = req.body;
 
-    if (!title || !description) {
-      return res.status(400).json({ error: "All fields are required." });
+    // Find the task first to preserve existing values
+    const task = await Task.findById(id);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
     }
 
-    if (title.length < 6) {
-      return res.status(400).json({ error: "Title must have 6 characters." });
-    }
+    // Merge updates with existing task data
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { 
+        title: updates.title || task.title,
+        description: updates.description || task.description,
+        priority: updates.priority || task.priority,
+        status: updates.status || task.status
+      },
+      { new: true } // Return the updated document
+    );
 
-    if (description.length < 6) {
-      return res.status(400).json({ error: "Description must have 6 characters." });
-    }
-
-    await Task.findByIdAndUpdate(id, { title, description, priority, status });
-
-    return res.status(200).json({ success: "Task updated" });
+    return res.status(200).json({ success: "Task updated", task: updatedTask });
   } catch (error) {
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -87,5 +91,6 @@ const deleteTask = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 module.exports = { addTask, editTask, getTask, deleteTask };

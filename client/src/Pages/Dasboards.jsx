@@ -3,66 +3,81 @@ import { useNavigate } from 'react-router-dom';
 import TaskBoard from '../components/TaskBoard';
 import AddTask from '../components/AddTask';
 import Header from '../components/Header';
+import { FaHome, FaCog, FaQuestionCircle, FaTasks, FaChartLine } from 'react-icons/fa';
 
 function Dashboard() {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [taskRefreshTrigger, setTaskRefreshTrigger] = useState(false);
   const navigate = useNavigate();
 
-  const handleAddTaskClick = () => setIsAddTaskOpen(true);
   const closeModal = () => setIsAddTaskOpen(false);
   const fetchTasks = () => setTaskRefreshTrigger(prev => !prev);
-  const handleHelpClick = () => navigate('/help');
-  const handleSettingClick = () => navigate('/settings')
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-900 to-gray-900 text-gray-200 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
       <Header setAddTaskDiv={setIsAddTaskOpen} />
 
-      {/* Main Body */}
+      {/* Main Content Area */}
       <div className="flex flex-1">
         {/* Sidebar */}
-        <aside className="w-64 bg-gray-800/80 border-r border-gray-700 p-6 hidden md:block backdrop-blur-sm">
-          <nav className="space-y-3 mt-8">
-            <button className="w-full text-left px-4 py-3 text-gray-300 font-medium rounded-lg hover:bg-gray-700/50 transition-all duration-300 flex items-center gap-3 group">
-              <span className="text-xl group-hover:text-yellow-400 transition-colors">📊</span> 
+        <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:block sticky top-0 h-screen">
+          <nav className="space-y-2">
+            {/* Dashboard */}
+            <button 
+              className={`w-full text-left px-4 py-3 text-gray-700 font-medium rounded-lg transition-all flex items-center gap-3 ${window.location.pathname === '/dashboard' ? 'bg-teal-50 text-teal-700' : 'hover:bg-gray-100'}`}
+              onClick={() => navigate('/dashboard')}
+            >
+              <FaHome className={`${window.location.pathname === '/dashboard' ? 'text-teal-600' : 'text-gray-500'}`} />
               <span>Dashboard</span>
             </button>
-            <button className="w-full text-left px-4 py-3 text-gray-300 font-medium rounded-lg hover:bg-gray-700/50 transition-all duration-300 flex items-center gap-3 group"
-            onClick={handleSettingClick}
+
+            {/* Performance */}
+            <button
+              className={`w-full text-left px-4 py-3 text-gray-700 font-medium rounded-lg transition-all flex items-center gap-3 ${window.location.pathname === '/performance' ? 'bg-teal-50 text-teal-700' : 'hover:bg-gray-100'}`}
+              onClick={() => navigate('/performance')}
             >
-              <span className="text-xl group-hover:text-yellow-400 transition-colors">⚙️</span> 
+              <FaChartLine className={`${window.location.pathname === '/performance' ? 'text-teal-600' : 'text-gray-500'}`} />
+              <span>Performance</span>
+            </button>
+
+            {/* Settings */}
+            <button
+              className={`w-full text-left px-4 py-3 text-gray-700 font-medium rounded-lg transition-all flex items-center gap-3 ${window.location.pathname === '/settings' ? 'bg-teal-50 text-teal-700' : 'hover:bg-gray-100'}`}
+              onClick={() => navigate('/settings')}
+            >
+              <FaCog className={`${window.location.pathname === '/settings' ? 'text-teal-600' : 'text-gray-500'}`} />
               <span>Settings</span>
             </button>
+
+            {/* Help Center */}
             <button
-              onClick={handleHelpClick}
-              className="w-full text-left px-4 py-3 text-gray-300 font-medium rounded-lg hover:bg-gray-700/50 transition-all duration-300 flex items-center gap-3 group"
+              className={`w-full text-left px-4 py-3 text-gray-700 font-medium rounded-lg transition-all flex items-center gap-3 ${window.location.pathname === '/help' ? 'bg-teal-50 text-teal-700' : 'hover:bg-gray-100'}`}
+              onClick={() => navigate('/help')}
             >
-              <span className="text-xl group-hover:text-yellow-400 transition-colors">❓</span> 
+              <FaQuestionCircle className={`${window.location.pathname === '/help' ? 'text-teal-600' : 'text-gray-500'}`} />
               <span>Help Center</span>
             </button>
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 px-4 sm:px-6 py-6 overflow-auto">
-          {/* Task Board */}
+        <main className="flex-1 px-4 sm:px-6 py-6 overflow-auto bg-white">
           <TaskBoard refreshTrigger={taskRefreshTrigger} />
 
           {/* AddTask Modal */}
           {isAddTaskOpen && (
             <>
               <div
-                className="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm"
+                className="fixed inset-0 bg-black/50 z-40"
                 onClick={closeModal}
               ></div>
 
               <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-                <div className="bg-gray-800/90 backdrop-blur-sm w-full max-w-xl p-6 rounded-xl shadow-2xl border border-gray-700 relative">
+                <div className="bg-white w-full max-w-xl p-6 rounded-lg shadow-xl border border-gray-200 relative">
                   <button
                     onClick={closeModal}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-yellow-400 text-2xl transition-colors"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl transition-colors"
                   >
                     ✖
                   </button>

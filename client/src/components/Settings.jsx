@@ -1,224 +1,114 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaTasks, FaCog, FaBell, FaMoon } from 'react-icons/fa';
 
-const Settings = () => {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-    notifications: true,
-    darkMode: true
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ text: '', type: '' });
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    try {
-      // Example API call - replace with your actual endpoint
-      await axios.put('http://localhost:1000/api/v1/updateProfile', formData, {
-        withCredentials: true
-      });
-      
-      setMessage({ text: 'Settings updated successfully!', type: 'success' });
-    } catch (error) {
-      setMessage({
-        text: error.response?.data?.error || 'Failed to update settings',
-        type: 'error'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+const SettingsPage = () => {
+  // Toggle states
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState('system');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-900 to-gray-900 text-white p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <button 
-            onClick={() => navigate(-1)}
-            className="text-yellow-400 hover:text-yellow-300 text-2xl"
-          >
-            ←
-          </button>
-          <h1 className="text-3xl font-bold text-yellow-400">Settings</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center">
+            <FaTasks className="h-6 w-6 text-teal-600" />
+            <span className="ml-2 text-xl font-semibold text-gray-800">TaskMaster</span>
+          </div>
+          <Link to="/dashboard" className="text-sm text-gray-600 hover:text-teal-600">
+            ← Back to Dashboard
+          </Link>
         </div>
+      </header>
 
-        {message.text && (
-          <div className={`mb-6 p-4 rounded-lg ${
-            message.type === 'success' 
-              ? 'bg-green-800/50 border border-green-600' 
-              : 'bg-red-800/50 border border-red-600'
-          }`}>
-            {message.text}
-          </div>
-        )}
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="flex items-center text-2xl font-bold text-gray-800 mb-8">
+          <FaCog className="h-6 w-6 text-teal-600 mr-2" />
+          Settings
+        </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Profile Settings */}
-          <div className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
-              Profile Information
+        <div className="bg-white rounded-lg shadow-sm">
+          {/* Notification Settings */}
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="flex items-center text-lg font-semibold text-gray-800 mb-4">
+              <FaBell className="h-5 w-5 text-teal-600 mr-2" />
+              Notifications
             </h2>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email Toggle */}
+            <div className="flex justify-between items-center py-3">
               <div>
-                <label className="block text-gray-300 mb-1">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/80 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-                />
+                <p className="font-medium">Email Notifications</p>
+                <p className="text-sm text-gray-500">Get updates via email</p>
               </div>
+              <ToggleSwitch 
+                isOn={emailNotifications} 
+                handleToggle={() => setEmailNotifications(!emailNotifications)}
+              />
+            </div>
 
+            {/* Push Toggle */}
+            <div className="flex justify-between items-center py-3">
               <div>
-                <label className="block text-gray-300 mb-1">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/80 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-                />
+                <p className="font-medium">Push Notifications</p>
+                <p className="text-sm text-gray-500">Get real-time alerts</p>
               </div>
-
-              <div className="pt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-teal-600 hover:bg-teal-500 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 disabled:opacity-50"
-                >
-                  {loading ? 'Saving...' : 'Save Profile'}
-                </button>
-              </div>
-            </form>
+              <ToggleSwitch 
+                isOn={pushNotifications} 
+                handleToggle={() => setPushNotifications(!pushNotifications)}
+              />
+            </div>
           </div>
 
-          {/* Security Settings */}
-          <div className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 shadow-lg">
-            <h2 className="text-xl font-semibold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
-              Security
+          {/* Theme Settings */}
+          <div className="p-6">
+            <h2 className="flex items-center text-lg font-semibold text-gray-800 mb-4">
+              <FaMoon className="h-5 w-5 text-teal-600 mr-2" />
+              Appearance
             </h2>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-gray-300 mb-1">Current Password</label>
-                <input
-                  type="password"
-                  name="currentPassword"
-                  value={formData.currentPassword}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/80 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 mb-1">New Password</label>
-                <input
-                  type="password"
-                  name="newPassword"
-                  value={formData.newPassword}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/80 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-300 mb-1">Confirm Password</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/80 border border-gray-600 rounded-lg px-4 py-2 text-white focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400/30 transition-all"
-                />
-              </div>
-
-              <div className="pt-4">
+            <div className="flex space-x-3">
+              {['light', 'dark', 'system'].map((theme) => (
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-teal-600 hover:bg-teal-500 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 disabled:opacity-50"
+                  key={theme}
+                  onClick={() => setSelectedTheme(theme)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium ${
+                    selectedTheme === theme
+                      ? 'bg-teal-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
-                  {loading ? 'Updating...' : 'Update Password'}
+                  {theme.charAt(0).toUpperCase() + theme.slice(1)}
                 </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Preferences */}
-          <div className="bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 shadow-lg lg:col-span-2">
-            <h2 className="text-xl font-semibold mb-4 text-yellow-400 border-b border-gray-700 pb-2">
-              Preferences
-            </h2>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-gray-300 font-medium">Dark Mode</h3>
-                  <p className="text-gray-400 text-sm">Toggle dark/light theme</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="darkMode"
-                    checked={formData.darkMode}
-                    onChange={handleChange}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-                </label>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-gray-300 font-medium">Email Notifications</h3>
-                  <p className="text-gray-400 text-sm">Receive task notifications</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="notifications"
-                    checked={formData.notifications}
-                    onChange={handleChange}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-                </label>
-              </div>
-
-              <div className="pt-4">
-                <button
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="bg-teal-600 hover:bg-teal-500 text-white font-semibold py-2 px-6 rounded-lg transition-all duration-300 disabled:opacity-50"
-                >
-                  {loading ? 'Saving...' : 'Save Preferences'}
-                </button>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t mt-12 py-8">
+        <div className="max-w-4xl mx-auto px-4 text-center text-gray-600">
+          © {new Date().getFullYear()} TaskMaster
+        </div>
+      </footer>
     </div>
   );
 };
 
-export default Settings;
+// Reusable Toggle Component
+const ToggleSwitch = ({ isOn, handleToggle }) => {
+  return (
+    <button
+      onClick={handleToggle}
+      className={`w-12 h-6 rounded-full p-1 transition-colors ${isOn ? 'bg-teal-600' : 'bg-gray-300'}`}
+    >
+      <div className={`bg-white w-4 h-4 rounded-full transform transition-transform ${isOn ? 'translate-x-6' : ''}`} />
+    </button>
+  );
+};
+
+export default SettingsPage;

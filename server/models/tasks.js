@@ -28,6 +28,9 @@ const taskSchema = new Schema({
     ref: "User",
     required: true
   }
+},
+{
+  timestamps: true // <-- this adds createdAt and updatedAt
 });
 
 module.exports = mongoose.model("Task", taskSchema);
