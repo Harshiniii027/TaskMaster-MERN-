@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaTasks } from 'react-icons/fa';
 
+const API_URL = "https://taskmaster-mern-backend.onrender.com/api/v1";
+
 const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
   const [taskValues, setTaskValues] = useState({
     title: '',
@@ -9,6 +11,8 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
     priority: 'medium',
     status: 'ToDo',
   });
+
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (editTaskData) {
@@ -31,71 +35,58 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
     try {
       if (editTaskData) {
         await axios.put(
-          `https://taskmaster-mern.onrender.com/api/v1/editTask/${editTaskData._id}`,
+          `${API_URL}/editTask/${editTaskData._id}`,
           taskValues,
-          { withCredentials: true }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         alert('Task Updated Successfully');
       } else {
         await axios.post(
-          'https://taskmaster-mern.onrender.com/api/v1/addTask',
+          `${API_URL}/addTask`,
           taskValues,
-          { withCredentials: true }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
         alert('Task Added Successfully');
       }
       refreshTasks();
       closeModal();
     } catch (error) {
-      console.error('Error saving task:', error);
+      console.error('Error saving task:', error.response || error);
       alert(error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
   return (
-    <div 
-      className="fixed inset-0 bg-white z-50 flex items-center justify-center" // Changed to solid black
-      onClick={closeModal}
-    >
-      <div 
-        className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl" // Increased shadow
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header with centered icon and title */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={closeModal}>
+      <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="text-center mb-6">
           <div className="flex items-center justify-center">
-            <FaTasks className="h-8 w-8 text-teal-600" /> {/* Larger icon */}
+            <FaTasks className="h-8 w-8 text-teal-600" />
             <span className="ml-3 text-2xl font-bold text-gray-800">TaskMaster</span>
           </div>
-          <p className="mt-2 text-gray-600">
-            {editTaskData ? 'Edit Your Task' : 'Create New Task'}
-          </p>
+          <p className="mt-2 text-gray-600">{editTaskData ? 'Edit Your Task' : 'Create New Task'}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <input
-              type="text"
-              name="title"
-              value={taskValues.title}
-              onChange={handleChange}
-              placeholder="Task Title"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
-              required
-            />
-          </div>
+          <input
+            type="text"
+            name="title"
+            value={taskValues.title}
+            onChange={handleChange}
+            placeholder="Task Title"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
+            required
+          />
 
-          <div>
-            <textarea
-              name="description"
-              value={taskValues.description}
-              onChange={handleChange}
-              placeholder="Task Description"
-              rows="4"
-              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
-              required
-            />
-          </div>
+          <textarea
+            name="description"
+            value={taskValues.description}
+            onChange={handleChange}
+            placeholder="Task Description"
+            rows="4"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition"
+            required
+          />
 
           <div className="grid grid-cols-2 gap-5">
             <div>

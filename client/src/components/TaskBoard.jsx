@@ -6,7 +6,6 @@ import axios from "axios";
 import AddTask from "./AddTask";
 import { FaPlus } from "react-icons/fa";
 
-// Change this to your deployed backend URL
 const API_URL = "https://taskmaster-mern-backend.onrender.com/api/v1";
 
 const TaskBoard = ({ refreshTrigger }) => {
@@ -14,7 +13,7 @@ const TaskBoard = ({ refreshTrigger }) => {
   const [editingTask, setEditingTask] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const token = localStorage.getItem("token"); // JWT stored in localStorage
+  const token = localStorage.getItem("token"); // JWT from login
 
   const fetchTasks = async () => {
     try {
@@ -44,9 +43,8 @@ const TaskBoard = ({ refreshTrigger }) => {
 
   const updateTaskStatus = async (taskId, newStatus) => {
     try {
-      // Optimistic update
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
+      setTasks((prev) =>
+        prev.map((task) =>
           task._id === taskId ? { ...task, status: newStatus } : task
         )
       );
