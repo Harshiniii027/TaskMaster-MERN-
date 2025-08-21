@@ -31,14 +31,14 @@ const AddTask = ({ closeModal, refreshTasks, editTaskData }) => {
     try {
       if (editTaskData) {
         await axios.put(
-          `http://localhost:1000/api/v1/editTask/${editTaskData._id}`,
+          `https://taskmaster-mern.onrender.com/api/v1/editTask/${editTaskData._id}`,
           taskValues,
           { withCredentials: true }
         );
         alert('Task Updated Successfully');
       } else {
         await axios.post(
-          'http://localhost:1000/api/v1/addTask',
+          'https://taskmaster-mern.onrender.com/api/v1/addTask',
           taskValues,
           { withCredentials: true }
         );

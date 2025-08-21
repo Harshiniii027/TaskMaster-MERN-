@@ -18,7 +18,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:1000/api/v1/login", values, {
+      const res = await axios.post("https://taskmaster-mern.onrender.com/api/v1/login", values, {
         withCredentials: true,
       });
       navigate("/dashboard");

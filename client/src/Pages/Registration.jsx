@@ -19,7 +19,7 @@ const Registration = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:1000/api/v1/register", values);
+      await axios.post("https://taskmaster-mern.onrender.com/api/v1/register", values);
       alert("Registration Successful!");
       navigate("/login");
     } catch (error) {

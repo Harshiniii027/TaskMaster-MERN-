@@ -19,7 +19,7 @@ const TaskBoard = ({ refreshTrigger }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:1000/api/v1/deleteTask/${id}`, { 
+      await axios.delete(`https://taskmaster-mern.onrender.com/api/v1/deleteTask/${id}`, { 
         withCredentials: true 
       });
       setTasks(tasks.filter((t) => t._id !== id));
@@ -30,7 +30,7 @@ const TaskBoard = ({ refreshTrigger }) => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:1000/api/v1/getTasks", {
+      const response = await axios.get("https://taskmaster-mern.onrender.com/api/v1/getTasks", {
         withCredentials: true,
       });
       setTasks(response.data.tasks);
@@ -54,7 +54,7 @@ const TaskBoard = ({ refreshTrigger }) => {
 
       // API call
       await axios.put(
-        `http://localhost:1000/api/v1/editTask/${taskId}`,
+        `https://taskmaster-mern.onrender.com/api/v1/editTask/${taskId}`,
         { status: newStatus },
         { 
           withCredentials: true,
