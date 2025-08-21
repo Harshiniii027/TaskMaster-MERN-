@@ -8,6 +8,7 @@ import HomePage from './Pages/HomePage'
 import Help from './components/Help'
 import Settings from './components/Settings'
 
+
 const App = () => {
   return (
     <>
